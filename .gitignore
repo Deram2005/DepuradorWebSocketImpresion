@@ -1,0 +1,55 @@
+# Nivel de compilación / Salidas
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleasePublic/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bbin/
+bin/
+obj/
+
+# Archivos de configuración de Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+
+# Configuración de VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# NuGet (Paquetes descargados automáticamente)
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+# Archivos de publicación (Publish)
+*publish/
+
+# Logs y reportes
+*.log
+*.log.*
+goblin.txt
+
+# Secretos y configuraciones locales sensibles
+# Es una buena práctica no subir secretos al repositorio
+secrets.json
+*.secret
+*.local.json
+
+# Archivos temporales del sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
