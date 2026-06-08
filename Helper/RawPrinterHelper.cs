@@ -76,6 +76,53 @@ namespace WebSocketC_.Helper
             }
         }
 
+        public static bool SendBytesToPrinter(string printerName, byte[] bytes)
+        {
+            try
+            {
+                IntPtr pBytes = Marshal.AllocCoTaskMem(bytes.Length);
+                Marshal.Copy(bytes, 0, pBytes, bytes.Length);
+
+                bool success = SendBytesToPrinter(printerName, pBytes, bytes.Length);
+
+                Marshal.FreeCoTaskMem(pBytes);
+
+                return success;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al enviar bytes RAW: " + ex.Message);
+                return false;
+            }
+        }
+
+        private static bool SendBytesToPrinter(string printerName, IntPtr pBytes, int dwCount)
+        {
+            IntPtr hPrinter = IntPtr.Zero;
+            int dwWritten = 0;
+            DOCINFOA di = new DOCINFOA();
+            bool success = false;
+
+            di.pDocName = "Documento Térmico Directo";
+            di.pDataType = "RAW";
+
+            if (OpenPrinter(printerName.Normalize(), out hPrinter, IntPtr.Zero))
+            {
+                if (StartDocPrinter(hPrinter, 1, di))
+                {
+                    if (StartPagePrinter(hPrinter))
+                    {
+                        // Escribimos los bytes puros en la impresora
+                        success = WritePrinter(hPrinter, pBytes, dwCount, out dwWritten);
+                        EndPagePrinter(hPrinter);
+                    }
+                    EndDocPrinter(hPrinter);
+                }
+                ClosePrinter(hPrinter);
+            }
+            return success;
+        }
+
         public static bool PrinterOnline(string printerName)
         {
             string query = $"SELECT * FROM Win32_Printer WHERE Name = '{printerName}'";

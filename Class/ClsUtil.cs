@@ -19,13 +19,12 @@ namespace WebSocketC_.Class
             return list;
         }
 
-        public (bool, string) PrintDocument(string printerName, List<byte[]> files)
+        public (bool, string) PrintDocument(string printerName, string typePrinter, List<byte[]> files)
         {
-            IntPtr hPrinter = IntPtr.Zero; // En vez de nint
+            IntPtr hPrinter = IntPtr.Zero;
 
             try
             {
-                // Verificar si la impresora se puede abrir
                 if (!RawPrinterHelper.PrinterOnline(printerName))
                 {
                     return (false, $"La impresora '{printerName}' está instalada pero sin conexión.");
@@ -40,12 +39,18 @@ namespace WebSocketC_.Class
 
                 foreach (var fileBytes in files)
                 {
-                    //string test = "Hola impresora\r\n\r\n\f"; // \f = Form Feed (forzar impresión)
-                    //byte[] bytes = Encoding.ASCII.GetBytes(test);
-                    //bool success = RawPrinterHelper.SendBytesToPrinter("EPSON4381B7 (L4150 Series)", bytes);
+                    bool success = false;
 
-                    //bool success = RawPrinterHelper.SendBytesToPrinter(printerName, fileBytes);
-                    bool success = RawPrinterHelper.PrintPdfFromBytes(printerName, fileBytes);
+                    if (string.IsNullOrEmpty(typePrinter) || typePrinter.ToUpper() == "NORMAL")
+                    {
+                        // Usar Pdfium para PDFs o impresoras normales
+                        success = RawPrinterHelper.PrintPdfFromBytes(printerName, fileBytes);
+                    }
+                    else
+                    {
+                        // Usar vía directa RAW para ESCPOS, ZPL, TSPL
+                        success = RawPrinterHelper.SendBytesToPrinter(printerName, fileBytes);
+                    }
 
                     if (!success)
                     {
@@ -58,11 +63,6 @@ namespace WebSocketC_.Class
             catch (Exception ex)
             {
                 return (false, $"Ocurrió un error al imprimir: {ex.Message}");
-            }
-            finally
-            {
-                if (hPrinter != IntPtr.Zero)
-                    RawPrinterHelper.ClosePrinter(hPrinter);
             }
         }
     }

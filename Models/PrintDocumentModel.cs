@@ -9,6 +9,7 @@ namespace WebSocketC_.Models
     public class PrintDocumentModel
     {
         public string NamePrinter { get; set; }
+        public string TypePrinter { get; set; }
         public List<byte[]> Documents { get; set; }
 
         public PrintDocumentModel()

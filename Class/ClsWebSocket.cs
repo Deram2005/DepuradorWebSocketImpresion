@@ -53,7 +53,7 @@ namespace WebSocketC_.Class
                         var printDataJson = data.ResponseModel != null ? data.ResponseModel.ToString() : "{}";
                         var printData = JsonConvert.DeserializeObject<PrintDocumentModel>(printDataJson);
 
-                        var print = util.PrintDocument(printData.NamePrinter, printData.Documents);
+                        var print = util.PrintDocument(printData.NamePrinter, printData.TypePrinter, printData.Documents);
 
                         value = new ResultModel<object>
                         {
